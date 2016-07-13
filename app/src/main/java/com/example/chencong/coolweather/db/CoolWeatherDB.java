@@ -34,7 +34,7 @@ public class CoolWeatherDB {
 
     /*
     * 获得coolWeatherDB的实例*/
-    public synchronized static CoolWeatherDB getCoolWeatherDB(Context context) {
+    public synchronized static CoolWeatherDB getInstance(Context context) {
         if (coolWeatherDB == null) {
             coolWeatherDB = new CoolWeatherDB(context);
         }
@@ -54,7 +54,7 @@ public class CoolWeatherDB {
 
     /*
     * 从数据库中读出全国所有的身份信息*/
-    public List<Province> loadProvince(){
+    public List<Province> loadProvinces(){
         List<Province> list = new ArrayList<Province>();
         Cursor cursor = db.query("Province",null,null,null,null,null,null);
         if (cursor.moveToFirst()){
@@ -80,13 +80,13 @@ public class CoolWeatherDB {
             values.put("city_name",city.getCityName());
             values.put("city_code",city.getCityCode());
             values.put("province_id",city.getProvinceId());
-            db.insert("City",null,null);
+            db.insert("City",null,values);
         }
     }
 
     /*
     * 从数据库中读取某省份下所有的城市的信息*/
-    public  List<City> loadCity(int provinceId){
+    public  List<City> loadCities(int provinceId){
         List<City> list = new ArrayList<City>();
         Cursor cursor=db.query("City",null,"province_id = ?",new String[] {String.valueOf(provinceId)},null,null,null);
         if (cursor.moveToFirst()){
