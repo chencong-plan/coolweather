@@ -2,7 +2,10 @@ package com.example.chencong.coolweather.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -61,6 +64,16 @@ public class ChooseAreaActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //从ChooseAreaActivity跳转到WeatherActivity
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getBoolean("city_selected",false)){
+            Intent intent = new Intent(this,WeatherActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.choose_area);
         listView = (ListView)findViewById(R.id.list_view);
@@ -78,7 +91,17 @@ public class ChooseAreaActivity extends Activity {
                 }else if (currentLevel == LEVEL_CITY){
                     selectedCity = cityList.get(position);
                     queryCounties();
+
+                    //从ChooseAreaActivity跳转到WeatherActivity
+                }else if (currentLevel == LEVEL_COUNTY){
+                    String countyCode = countyList.get(position).getCountyCode();
+                    Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class);
+                    intent.putExtra("county_code",countyCode);
+                    startActivity(intent);
+                    finish();
                 }
+
+
             }
         });
         queryProvinces();   //加载省级数据
